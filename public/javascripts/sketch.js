@@ -182,29 +182,36 @@ var countries = [
 ];
 
 $(document).ready(function() {
-  var url = 'http://www.rssmix.com/u/8280914/rss.xml';
-  feednami.load(url,function(result){
-    if(result.error) {
-      console.log(result.error);
-    } else {
-      var entries = result.feed.entries;
-      for(var i = 0; i < entries.length; i++){
-        var entry = entries[i];
-        //console.dir(entry);
-        //console.log(entry.title);
-        //console.log(entry.summary);
-        countCountries(entry.summary);
-      }
+  $.getJSON("json/feeds.json", function(feeds) {
+    console.log(feeds);
+    for (var i = 0; i < feeds.length; i++) {
+      var url = feeds[i];
+      feednami.load(url,function(result){
+        if(result.error) {
+          console.log(result.error);
+        } else {
+          var entries = result.feed.entries;
+          for(var i = 0; i < entries.length; i++){
+            var entry = entries[i];
+            //console.dir(entry);
+            //console.log(entry.title);
+            //console.log(entry.summary);
+            countCountries(entry.summary);
+          }
 
-      //console.log(countries);
-      google.charts.load('current', {
-        'packages':['geochart'],
-        // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
-        'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+          //console.log(countries);
+          google.charts.load('current', {
+            'packages':['geochart'],
+            // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+            'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+          });
+          google.charts.setOnLoadCallback(drawRegionsMap);
+        }
       });
-      google.charts.setOnLoadCallback(drawRegionsMap);
     }
+
   });
+
 });
 
 function drawRegionsMap() {
