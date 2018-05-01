@@ -1,3 +1,6 @@
+// https://developer.yahoo.com/yql/
+// select title,link,description from rss where url = 'https://www.engadget.com/rss.xml'
+
 var countries = [
   ['Country', 'News Hits'],
   ['United States', 0],
@@ -186,38 +189,18 @@ $(document).ready(function() {
     console.log(feeds);
     for (var i = 0; i < feeds.length; i++) {
       var url = feeds[i];
-      $.ajax(url, {
-        accepts:{
-            xml:"application/rss+xml"
-        },
-        dataType:"xml",
-        success:function(data) {
-            //Credit: http://stackoverflow.com/questions/10943544/how-to-parse-an-rss-feed-using-javascript
 
-            $(data).find("item").each(function () { // or "item" or whatever suits your feed
-                var el = $(this);
-                console.log("------------------------");
-                console.log("title      : " + el.find("title").text());
-                console.log("link       : " + el.find("link").text());
-                console.log("description: " + el.find("description").text());
-            });
+      //
 
-
-        }
-    });
-    /*
-      feednami.load(url,function(result){
-        if(result.error) {
-          console.log(result.error);
-        } else {
-          var entries = result.feed.entries;
-          for(var i = 0; i < entries.length; i++){
-            var entry = entries[i];
-            //console.dir(entry);
-            //console.log(entry.title);
-            //console.log(entry.summary);
-            countCountries(entry.summary);
-          }
+      $.getJSON(url, function(res) {
+        console.log(res);
+        var entries = res.query.results.item;
+        for(var i = 0; i < entries.length; i++){
+          var entry = entries[i];
+          //console.dir(entry);
+          //console.log(entry.title);
+          //console.log(entry.summary);
+          countCountries(entry.description);
 
           //console.log(countries);
           google.charts.load('current', {
@@ -227,8 +210,13 @@ $(document).ready(function() {
           });
           google.charts.setOnLoadCallback(drawRegionsMap);
         }
-      });
-      */
+      }, "jsonp");
+      //
+
+
+
+
+
     }
 
   });
